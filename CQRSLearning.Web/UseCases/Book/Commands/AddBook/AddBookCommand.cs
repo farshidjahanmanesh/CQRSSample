@@ -1,13 +1,11 @@
 ﻿
-using CQRSLearning.Web.UseCases.Interfaces;
+
+using MediatR;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CQRSLearning.Web.UseCases.Book.Commands.AddBook
 {
-    public class AddBookCommand : ICommand
+    public class AddBookCommand : IRequest
     {
         public string Title { get; set; }
         public string AuthorName { get; set; }

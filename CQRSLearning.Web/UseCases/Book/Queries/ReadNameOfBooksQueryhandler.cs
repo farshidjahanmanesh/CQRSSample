@@ -1,11 +1,14 @@
 ﻿using CQRSLearning.Web.Data;
 using CQRSLearning.Web.Dtos;
 using CQRSLearning.Web.UseCases.Interfaces;
+using MediatR;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CQRSLearning.Web.UseCases.Book.Queries
 {
-    public class ReadNameOfBooksQueryhandler : IQueryHandler<BookNamesDto>
+    public class ReadNameOfBooksQueryhandler : IRequestHandler<ReadNameOfBooksQuery, BookNamesDto>
     {
         private readonly FakeDbContext _ctx;
 
@@ -13,13 +16,14 @@ namespace CQRSLearning.Web.UseCases.Book.Queries
         {
             this._ctx = ctx;
         }
-        public BookNamesDto Execute()
+
+        public Task<BookNamesDto> Handle(ReadNameOfBooksQuery request, CancellationToken cancellationToken)
         {
-            var bookTitles = _ctx.Books.Select(c => c.Title);
-            return new BookNamesDto()
+            var bookNames = new BookNamesDto()
             {
-                Names = bookTitles
+                Names = _ctx.Books.Select(c=>c.Title)
             };
+            return Task.FromResult(bookNames);
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿
 using CQRSLearning.Web.Dtos;
-using CQRSLearning.Web.Models;
 using CQRSLearning.Web.UseCases.Book.Commands.AddBook;
 using CQRSLearning.Web.UseCases.Book.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -15,9 +15,15 @@ namespace CQRSLearning.Web.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index([FromServices] ReadNameOfBooksQueryhandler handler)
+        private readonly IMediator mediator;
+
+        public HomeController(IMediator mediator)
         {
-            var listOfBookNames = handler.Execute();
+            this.mediator = mediator;
+        }
+        public async Task<IActionResult> Index()
+        {
+            var listOfBookNames = await mediator.Send(new ReadNameOfBooksQuery());
             return View(listOfBookNames);
         }
 
@@ -27,9 +33,10 @@ namespace CQRSLearning.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateBook([FromServices]AddBookCommandHandler handler,CreateBookDto book)
+        public IActionResult CreateBook(CreateBookDto book)
         {
-            handler.Execute(new AddBookCommand(book.Title, book.AuthorName, DateTime.Now));
+            var bookCommand = new AddBookCommand(book.Title, book.AuthorName, DateTime.Now);
+            mediator.Send(bookCommand);
             return RedirectToAction("index", "home");
         }
     }

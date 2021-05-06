@@ -1,6 +1,7 @@
 
 using CQRSLearning.Web.Data;
 using CQRSLearning.Web.UseCases.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -26,21 +27,26 @@ namespace CQRSLearning.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<FakeDbContext>();
-            var resultCommandHandlers = typeof(Startup).Assembly.GetTypes().Where(c=>c.GetInterfaces().Any(d=>d.IsGenericType==true&&d.GetGenericTypeDefinition()== typeof(ICommandHandler<>)));
-            var resultQueryHandlersWithInput = typeof(Startup).Assembly.GetTypes().Where(c => c.GetInterfaces().Any(d => d.IsGenericType == true && d.GetGenericTypeDefinition() == typeof(IQueryHandler<,>)));
-            var resultQueryHandlersWithOutInput = typeof(Startup).Assembly.GetTypes().Where(c => c.GetInterfaces().Any(d => d.IsGenericType == true && d.GetGenericTypeDefinition() == typeof(IQueryHandler<>)));
-            foreach (var command in resultCommandHandlers)
-            {
-                services.AddScoped(command);
-            }
-            foreach (var command in resultQueryHandlersWithInput)
-            {
-                services.AddScoped(command);
-            }
-            foreach (var command in resultQueryHandlersWithOutInput)
-            {
-                services.AddScoped(command);
-            }
+
+            #region for CQRS without Any Library
+            //var resultCommandHandlers = typeof(Startup).Assembly.GetTypes().Where(c=>c.GetInterfaces().Any(d=>d.IsGenericType==true&&d.GetGenericTypeDefinition()== typeof(ICommandHandler<>)));
+            //var resultQueryHandlersWithInput = typeof(Startup).Assembly.GetTypes().Where(c => c.GetInterfaces().Any(d => d.IsGenericType == true && d.GetGenericTypeDefinition() == typeof(IQueryHandler<,>)));
+            //var resultQueryHandlersWithOutInput = typeof(Startup).Assembly.GetTypes().Where(c => c.GetInterfaces().Any(d => d.IsGenericType == true && d.GetGenericTypeDefinition() == typeof(IQueryHandler<>)));
+            //foreach (var command in resultCommandHandlers)
+            //{
+            //    services.AddScoped(command);
+            //}
+            //foreach (var command in resultQueryHandlersWithInput)
+            //{
+            //    services.AddScoped(command);
+            //}
+            //foreach (var command in resultQueryHandlersWithOutInput)
+            //{
+            //    services.AddScoped(command);
+            //}
+            #endregion
+
+            services.AddMediatR(typeof(Startup));
             services.AddControllersWithViews();
         }
 
