@@ -1,0 +1,21 @@
+﻿
+@{
+    ViewData["Title"] = "CreateBook";
+}
+
+
+<form asp-action="CreateBook" asp-controller="Home" method="post">
+   
+    <div>
+        <label>Title :</label>
+        <input type="text" name="Title" />
+    </div>
+    <div>
+        <label>AuthorName :</label>
+        <input type="text" name="AuthorName" />
+    </div>
+    <div>
+        <input type="submit" value="Send" />
+    </div>
+</form>
+
