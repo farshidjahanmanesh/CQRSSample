@@ -1,6 +1,7 @@
 
 using CQRSLearning.Web.Data;
 using CQRSLearning.Web.UseCases.Interfaces;
+using CQRSLearning.Web.UseCases.Pipelines;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -47,6 +48,8 @@ namespace CQRSLearning.Web
             #endregion
 
             services.AddMediatR(typeof(Startup));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ErrorCatchingBehavior<,>));
             services.AddControllersWithViews();
         }
 
